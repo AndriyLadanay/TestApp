@@ -10,34 +10,36 @@ import java.util.List;
 public class AnswerServiceImpl implements AnswerService {
 
     @Autowired
-    private DepartmentDao dao;
+    protected DepartmentDao dao;
 
-    public void printAnswer(String question) {
+    public String getAnswer(String question) {
         if (question.startsWith("Who is head of department")) {
             String dpName = question.split(" ")[5];
-            System.out.println("Head of " + dpName + " department is " + dao.getHeadOfDepartment(dpName));
-        }
-        else if(question.startsWith("Show") && question.endsWith("statistics")) {
+            return "Head of " + dpName + " department is " + dao.getHeadOfDepartment(dpName);
+        } else if(question.startsWith("Show") && question.endsWith("statistics")) {
             String dpName = question.split(" ")[1];
-            System.out.println("assistants - " + dao.getAssistantCount(dpName));
-            System.out.println("associate professors - " + dao.getAssociateProfessorsCount(dpName));
-            System.out.println("professors - " + dao.getProfessorsCount(dpName));
-        }
-        else if(question.startsWith("Show the average salary for department")) {
+            StringBuilder builder = new StringBuilder();
+            builder.append("assistants - " + dao.getAssistantCount(dpName) + System.lineSeparator());
+            builder.append("associate professors - " + dao.getAssociateProfessorsCount(dpName) + System.lineSeparator());
+            builder.append("professors - " + dao.getProfessorsCount(dpName));
+            return builder.toString();
+        } else if(question.startsWith("Show the average salary for department")) {
             String dpName = question.split(" ")[6];
-            System.out.println("The average salary of " + dpName + " is " + dao.getAverageSalary(dpName));
-        }
-        else if(question.startsWith("Show count of employee for")) {
+            return "The average salary of " + dpName + " is " + dao.getAverageSalary(dpName);
+        } else if(question.startsWith("Show count of employee for")) {
             String dpName = question.split(" ")[5];
-            System.out.println(dao.getEmployeesCount(dpName));
-        }
-        else if(question.startsWith("Global search by")) {
+            return dao.getEmployeesCount(dpName) + "";
+        } else if(question.startsWith("Global search by")) {
             String template = question.split(" ")[3];
             List<String> results = dao.search(template);
+            StringBuilder builder = new StringBuilder();
             for (String result: results ) {
-                System.out.print(result + ", ");
+                builder.append(result);
+                builder.append(", ");
             }
-        }
-        else System.out.println("I am not so smart to answer this");
+            builder.deleteCharAt(builder.lastIndexOf(", "));
+            builder.deleteCharAt(builder.lastIndexOf(" "));
+            return builder.toString();
+        } else { return "I am not so smart to answer this"; }
     }
 }

@@ -2,6 +2,6 @@ package services;
 
 public interface AnswerService {
 
-    void printAnswer(String answer);
+    String getAnswer(String answer);
 
 }
